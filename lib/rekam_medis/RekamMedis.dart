@@ -153,30 +153,6 @@ class _RekamMedis extends State<RekamMedis> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //baris untuk tanggal, waktu
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment
-                              .end, // Ubah ke CrossAxisAlignment.end
-                          children: [
-                            Text(
-                              '${selectedPatient.date}, ${selectedPatient.time}',
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
                   //baris untuk spesialis dan dokter
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -334,18 +310,6 @@ class _RekamMedis extends State<RekamMedis> {
                               fontSize: 15,
                               color: Colors.white,
                             ),
-                          ),
-                        ),
-                      ),
-                      //menggunakan spacer untuk nominal
-                      Spacer(),
-                      Text(
-                        '${selectedPatient.nominal}',
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: Colors.black,
                           ),
                         ),
                       ),

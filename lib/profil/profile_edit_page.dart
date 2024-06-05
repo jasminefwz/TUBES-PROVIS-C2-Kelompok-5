@@ -118,21 +118,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                           )),
                         ),
                       ),
-                      Padding(
-                        // Padding untuk nama pengguna
-                        padding: const EdgeInsets.only(
-                            left: 10), // Padding sebelah kiri sebesar 10
-                        child: Text(
-                          // Teks untuk nama pengguna
-                          "Ratu Syahirah", // Nama pengguna
-                          style: GoogleFonts.nunito(
-                              // Gaya teks menggunakan Google Fonts
-                              textStyle: const TextStyle(
-                            wordSpacing: 2, // Spasi antar kata
-                            fontSize: 25, // Ukuran teks
-                          )),
-                        ),
-                      ),
+                      
                       Padding(
                         // Padding untuk nomor pasien
                         padding: const EdgeInsets.only(

@@ -14,79 +14,103 @@ class _LoginPageState extends State<LoginPage> {
   String username = '';
   String password = '';
   bool showError = false;
-  bool isPasswordVisible = false; // Tambahkan ini
+  bool isPasswordVisible = false;
 
-  void _handleLogin() {
-    // Proses untuk memeriksa kredensial login
-    if (username == 'user' && password == 'password') {
-      // Lakukan navigasi ke halaman beranda jika login berhasil
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+  Future<void> _handleLogin() async {
+    final url = 'http://127.0.0.1:8000/auth/login';
+    final headers = {
+      'accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+    final body = json.encode({
+      'username': username,
+      'password': password,
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
       );
-    } else {
-      // Tampilkan pop-up kata sandi salah jika login gagal
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Color(0xFFCEE7FD), // Background color biru muda
-            title: Center(
-              child: Text(
-                "Kata Sandi Salah!",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            content: Text("Username atau kata sandi yang Anda masukkan salah.",
-                style: TextStyle(fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center),
-            actions: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment
-                    .center, // Mengatur agar dua tombol berada di tengah
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(
-                          0xFF0068D7), // background biru untuk tombol kembali
-                    ),
-                    child: Text(
-                      'Kembali',
-                      style: TextStyle(
-                          color: Colors.white), // tulisan berwarna putih
-                    ),
-                  ),
-                  SizedBox(width: 10), // Mengatur jarak antara dua tombol
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showError = false;
-                      });
-                      // Reset fields atau tindakan lain yang diperlukan untuk login ulang
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF0068D7),
-                    ),
-                    child: Text(
-                      'Login Ulang',
-                      style: TextStyle(
-                          color: Colors.white), // tulisan berwarna putih
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
+
+      if (response.statusCode == 200) {
+        // Navigate to HomePage if login is successful
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BerandaPage()), // Mengarahkan ke BerandaPage
+          (route) => false, // Menghapus semua halaman di atasnya
+        );
+      } else {
+        // Show error dialog if login fails
+        _showErrorDialog();
+      }
+    } catch (e) {
+      // Handle network or other errors
+      print('Error: $e');
+      _showErrorDialog();
     }
   }
 
-  // Tambahkan metode ini
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFFCEE7FD),
+          title: Center(
+            child: Text(
+              "Kata Sandi Salah!",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          content: Text(
+            "Username atau kata sandi yang Anda masukkan salah.",
+            style: TextStyle(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF0068D7),
+                  ),
+                  child: Text(
+                    'Kembali',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      showError = false;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF0068D7),
+                  ),
+                  child: Text(
+                    'Login Ulang',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _togglePasswordVisibility() {
     setState(() {
       isPasswordVisible = !isPasswordVisible;
@@ -129,7 +153,7 @@ class _LoginPageState extends State<LoginPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          'No. Pasien',
+                          'Username',
                           textAlign: TextAlign.left,
                           style: GoogleFonts.nunito(
                             textStyle: TextStyle(
@@ -187,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                               password = value;
                             });
                           },
-                          obscureText: !isPasswordVisible, // Ubah di sini
+                          obscureText: !isPasswordVisible,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
@@ -203,7 +227,6 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.transparent,
                             ),
                             suffixIcon: IconButton(
-                              // Tambahkan ini
                               icon: Icon(
                                 isPasswordVisible
                                     ? Icons.visibility
@@ -217,7 +240,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 10),
                         GestureDetector(
                           onTap: () {
-                            // Aksi ketika teks "Lupa Kata Sandi?" ditekan
+                            // Navigate to reset password page
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -243,19 +266,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SizedBox(height: 30),
                         ElevatedButton(
-                          // onPressed: _handleLogin,
-                          onPressed: () {
-                            // Aksi saat tombol ditekan
-                            // Mengganti halaman saat ini dengan BerandaPage dan menghapus semua halaman di atasnya dalam tumpukan navigasi
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      BerandaPage()), // Mengarahkan ke BerandaPage
-                              (route) =>
-                                  false, // Menghapus semua halaman di atasnya
-                            );
-                          },
+                          onPressed: _handleLogin,
                           child: Text(
                             'Masuk',
                             style: GoogleFonts.nunito(
@@ -286,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            // Aksi ketika tombol daftar ditekan
+                            // Navigate to Register page
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -858,12 +869,11 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                             SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: () {
-                                Navigator.of(context).pop(); // Tutup dialog
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginPage()),
-                                ); // Navigasi ke halaman login
+                                // Aksi saat tombol ditekan
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => LoginPage()),
+                              );
                               },
                               child: Text(
                                 'Masuk',
@@ -923,6 +933,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String alamat = '';
   String phoneNumber = '';
   String email = '';
+  String username = '';
   String password = '';
   bool isAllFieldsFilled = false;
   bool _isObscure = true;
@@ -980,6 +991,7 @@ class _RegisterPageState extends State<RegisterPage> {
           alamat.isNotEmpty &&
           phoneNumber.isNotEmpty &&
           email.isNotEmpty &&
+          username.isNotEmpty &&
           password.isNotEmpty &&
           _selectedDate != null &&
           _selectedGender != null;
@@ -1044,20 +1056,21 @@ class _RegisterPageState extends State<RegisterPage> {
   void _register() async {
     if (isAllFieldsFilled) {
       Map<String, dynamic> requestData = {
-        "name": name,
-        "nik": nik,
-        "tempat_lahir": tempatLahir,
-        "tanggal_lahir": _selectedDate?.toIso8601String(),
-        "jenis_kelamin": _selectedGender == 1 ? "P" : "L",
-        "alamat": alamat,
-        "no_telp": phoneNumber,
-        "email": email,
-        "password": password
+        "nama_user": name,
+        "nik_user": nik,
+        "tmpt_lahir_user": tempatLahir,
+        "tl_user": _selectedDate?.toIso8601String(),
+        "jk_user": _selectedGender == 1 ? "P" : "L",
+        "alamat_user": alamat,
+        "telp_user": phoneNumber,
+        "email_user": email,
+        "pass_user": password,
+        "username": username // Assuming username is derived from email
       };
 
       try {
         final response = await http.post(
-          Uri.parse('http://127.0.0.1:8000'),
+          Uri.parse('http://127.0.0.1:8000/auth/register/'),
           headers: {
             'Content-Type': 'application/json',
             'accept': 'application/json',
@@ -1070,7 +1083,7 @@ class _RegisterPageState extends State<RegisterPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VerificationPage(),
+              builder: (context) => LoginPage(),
             ),
           );
         } else {
@@ -1333,6 +1346,30 @@ class _RegisterPageState extends State<RegisterPage> {
                     borderSide: BorderSide.none,
                   ),
                   hintText: 'Masukkan email Anda',
+                  filled: true,
+                  fillColor: Color(0xFFCEE7FD),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Username',
+                style: GoogleFonts.nunito(
+                  textStyle: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 5),
+              TextFormField(
+                onChanged: (value) {
+                  setState(() {
+                    username = value;
+                  });
+                  _checkFields();
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                  hintText: 'Masukkan username Anda',
                   filled: true,
                   fillColor: Color(0xFFCEE7FD),
                 ),
@@ -1770,7 +1807,7 @@ class SuccessPage extends StatelessWidget {
               onPressed: () {
                 // Aksi ketika tombol "Masuk" ditekan
                 // Navigasi ke halaman login
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
@@ -1802,24 +1839,24 @@ class SuccessPage extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Beranda'),
-      ),
-      body: Center(
-        child: Text(
-          'Selamat Datang di Beranda!',
-          style: GoogleFonts.nunito(
-            textStyle: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+// class HomePage extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Beranda'),
+//       ),
+//       body: Center(
+//         child: Text(
+//           'Selamat Datang di Beranda!',
+//           style: GoogleFonts.nunito(
+//             textStyle: TextStyle(
+//               fontSize: 24,
+//               fontWeight: FontWeight.bold,
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

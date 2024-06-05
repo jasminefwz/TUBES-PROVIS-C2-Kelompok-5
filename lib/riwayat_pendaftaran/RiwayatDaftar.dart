@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; //import untuk pdf
 import 'package:google_fonts/google_fonts.dart'; //import untuk font
 import '../janji_temu/janji_temu.dart'; //import class janji temu
+import '../rekam_medis/PilihPasien.dart';
 
 //membuat kelas RiwayatDaftar yang merupakan StatefulWidget
 class RiwayatDaftar extends StatefulWidget {
@@ -517,6 +518,49 @@ class _CheckIn extends State<CheckIn> {
   final Patient selectedPatient;
   _CheckIn({required this.selectedPatient});
 
+  int _currentStatusIndex = -1;
+  final List<String> _statusList = [
+    "Silahkan Check In di aplikasi Life Care Hospital",
+    "Silahkan ke Nurse Station di Lt 2",
+    "Silahkan ke ruang dokter di Lt 2 ruang A",
+    "Anda sedang diperiksa oleh dokter",
+    "Pembayaran di menu Rekam Medis"
+  ];
+
+  void _updateTrackingFlow() {
+    setState(() {
+      if (_currentStatusIndex < _statusList.length - 1) {
+        _currentStatusIndex++;
+      } else {
+        _showCompletionMessage();
+      }
+    });
+  }
+
+  void _showCompletionMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Janji temu Anda dengan dokter sudah selesai.'),
+          content: Text('Semoga lekas sembuh, jangan lupa minum obat ya!'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PilihPasien()), //mengarah ke halaman selanjutnya yaitu CheckIn
+                        );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -846,41 +890,131 @@ class _CheckIn extends State<CheckIn> {
               height: 140,
             ),
 
-            //qr qode
-            SizedBox(height: 30),
+            //check in
+            SizedBox(height: 25),
             Text(
-              "Kode Pendaftaran Anda",
+              "Klik saat akan Check In",
               style: GoogleFonts.poppins(
                 textStyle: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 17,
                   color: Colors.black,
                 ),
               ),
             ),
-            Image.asset(
-              'assets/images/qr.jpg',
-              width: 115,
-              height: 115,
-            ),
 
-            //kode pendaftaran
-            Container(
-              width: 240,
-              height: 32,
-              decoration: BoxDecoration(
-                color: Color(0xFF389AFF),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Center(
-                child: Text(
-                  "${selectedPatient.dob} - ${selectedPatient.no_invoice}",
-                  style: GoogleFonts.poppins(
-                    textStyle: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontStyle: FontStyle.italic),
+            SizedBox(height: 20),
+            //button untuk check in
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Color(0xFFCEE7FD),
+                      title: Text(
+                        'Pastikan Anda Check In dengan jadwal yang benar',
+                        style: GoogleFonts.poppins(
+                          textStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 19,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      content: Text(
+                        'Check In sekarang?',
+                        style: GoogleFonts.nunito(
+                          textStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      actions: <Widget>[
+                        ElevatedButton(
+                          onPressed: () {
+                            // Kembali
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            'Kembali',
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(
+                                0xFF0068D7), // Ganti warna tombol "Ya, Yakin"
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Anda sudah berhasil Check In!"),
+                                  content: Text(
+                                      "Pastikan Anda berada di rumah sakit untuk mengikuti tahapan selanjutnya."),
+                                  actions: [
+                                    TextButton(
+                                      child: Text("Ok"),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => CheckIn(
+                                  selectedPatient: selectedPatient)), //mengarah ke halaman selanjutnya yaitu CheckIn
+                                        );
+                                        // Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            'Ya',
+                            style: GoogleFonts.nunito(
+                              textStyle: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(
+                                0xFF0068D7), // Ganti warna tombol "Ya, Yakin"
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Text(
+                'CHECK IN DI SINI',
+                style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: Colors.white,
                   ),
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF0068D7),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                padding: EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 85,
                 ),
               ),
             ),
@@ -942,7 +1076,7 @@ class _CheckIn extends State<CheckIn> {
                       //isi di expand
                       Expanded(
                         child: Text(
-                          "Pasien membawa rekam medis yang terdapat di dalam aplikasi Rumah Sakit Life Care.",
+                          "Pastikan Anda sudah Check In di aplikasi Life Care Hospital pada hari jadwal janji temu yang telah ditentukan, maksimal 30 menit sebelum jam janji temu.",
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               fontSize: 15,
@@ -970,7 +1104,7 @@ class _CheckIn extends State<CheckIn> {
                       //isi di expand
                       Expanded(
                         child: Text(
-                          "Jangan lupa untuk membawa bukti pendaftaran (QR Code) yang terdapat di dalam aplikasi Rumah Sakit Life Care.",
+                          "Ikuti tahapan Rawat Jalan Anda di aplikasi Life Care Hospital.",
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               fontSize: 15,
@@ -983,7 +1117,7 @@ class _CheckIn extends State<CheckIn> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Jika berkas Anda tidak lengkap, maka Anda tidak dapat dilayani',
+                    'Jika Anda memiliki pertanyaan, silahkan hubungi Customer Service kami di layanan Informasi Rumah Sakit.',
                     style: GoogleFonts.poppins(
                       textStyle: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -1000,275 +1134,101 @@ class _CheckIn extends State<CheckIn> {
             SizedBox(height: 25),
             Container(
               width: 334,
-              height: 210,
-              child: Stack(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Positioned(
-                    left: 9,
-                    top: 0,
-                    child: SizedBox(
-                      width: 96,
-                      height: 35,
+                  Text(
+                    'Tahapan',
+                    style: GoogleFonts.poppins(
+                      textStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: _statusList.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 20,
+                                child: Column(
+                                  children: [
+                                    if (index > 0)
+                                      Container(
+                                        width: 2,
+                                        height: 10,
+                                        color: Colors.black,
+                                      ),
+                                    Icon(
+                                      index <= _currentStatusIndex
+                                          ? Icons.check_circle
+                                          : Icons.radio_button_unchecked,
+                                      color: index <= _currentStatusIndex
+                                          ? Colors.green
+                                          : Colors.grey,
+                                      size: 20,
+                                    ),
+                                    if (index < _statusList.length - 1)
+                                      Container(
+                                        width: 2,
+                                        height: 10,
+                                        color: Colors.black,
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  _statusList[index],
+                                  style: GoogleFonts.poppins(
+                                    textStyle: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _updateTrackingFlow,
                       child: Text(
-                        'Tahapan',
+                        'refresh tahapan',
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.black,
+                            fontSize: 13,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  //tracking flow
-                  Positioned(
-                    top: 40,
-                    left: 1,
-                    child: Container(
-                      width: 9,
-                      height: 164,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            //container hijau yang tandanya belum melewati tahapan
-                            child: Container(
-                              width: 9,
-                              height: 164,
-                              decoration: ShapeDecoration(
-                                color: Color(0xFF99E0E0),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6)),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 0,
-                                    top: 0,
-                                    //container biru muda yang tandanya sudah melewati tahapan
-                                    child: Container(
-                                      width: 9,
-                                      height: 70,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFFCEE7FD),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(6)),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: Container(
-                              width: 9,
-                              height: 164,
-                              child: Stack(
-                                children: [
-                                  //seperti tanda ceklisnya diasumsikan dengan lingkaran biru muda
-                                  Positioned(
-                                    left: 0,
-                                    top: 62,
-                                    child: Container(
-                                      width: 9,
-                                      height: 9,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFF389AFF),
-                                        shape: OvalBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                  //seperti tanda ceklisnya diasumsikan dengan lingkaran biru muda
-                                  Positioned(
-                                    left: 0,
-                                    top: 31,
-                                    child: Container(
-                                      width: 9,
-                                      height: 9,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFF389AFF),
-                                        shape: OvalBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                  //seperti tanda ceklisnya diasumsikan dengan lingkaran biru muda
-                                  Positioned(
-                                    left: 0,
-                                    top: 0,
-                                    child: Container(
-                                      width: 9,
-                                      height: 9,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFF389AFF),
-                                        shape: OvalBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                  //seperti tanda ceklisnya (belum) diasumsikan dengan lingkaran biru tua
-                                  Positioned(
-                                    left: 0,
-                                    top: 155,
-                                    child: Container(
-                                      width: 9,
-                                      height: 9,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFF0068D7),
-                                        shape: OvalBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                  //seperti tanda ceklisnya (belum) diasumsikan dengan lingkaran biru tua
-                                  Positioned(
-                                    left: 0,
-                                    top: 124,
-                                    child: Container(
-                                      width: 9,
-                                      height: 9,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFF0068D7),
-                                        shape: OvalBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                  //seperti tanda ceklisnya (belum) diasumsikan dengan lingkaran biru tua
-                                  Positioned(
-                                    left: 0,
-                                    top: 93,
-                                    child: Container(
-                                      width: 9,
-                                      height: 9,
-                                      decoration: ShapeDecoration(
-                                        color: Color(0xFF0068D7),
-                                        shape: OvalBorder(),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  //text tahapan
-                  Positioned(
-                    top: 35,
-                    left: 23,
-                    child: Container(
-                      width: 315,
-                      height: 177,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: SizedBox(
-                              //width: 296,
-                              height: 22,
-                              child: Text(
-                                'Silahkan Check-In di Lobby',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 31,
-                            child: SizedBox(
-                              //width: 296,
-                              height: 22,
-                              child: Text(
-                                'Silahkan ke Nurse Station di Lt 2',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 62,
-                            child: SizedBox(
-                              //width: 296,
-                              height: 22,
-                              child: Text(
-                                'Silahkan ke ruang dokter di ${selectedPatient.rdok}',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 93,
-                            child: SizedBox(
-                              //width: 296,
-                              height: 22,
-                              child: Text(
-                                'Anda sedang diperiksa oleh dokter',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 124,
-                            child: SizedBox(
-                              //width: 296,
-                              height: 22,
-                              child: Text(
-                                'Pembayaran di menu Rekam Medis',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 155,
-                            child: SizedBox(
-                              //width: 296,
-                              height: 22,
-                              child: Text(
-                                'Pengambilan obat',
-                                style: GoogleFonts.poppins(
-                                  textStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF0068D7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 20,
+                          horizontal: 100,
+                        ),
                       ),
                     ),
                   ),
@@ -1417,7 +1377,7 @@ class _CheckIn extends State<CheckIn> {
                       ),
                       Expanded(
                         child: Text(
-                          "Pasien dapat membatalkan janji temu maksimal h - 10 jam sebelum jadwal yang telah disepakati. Jika pasien tidak check in 30 menit sebelum batas janji atau dalam arti tidak ada kabar, maka janji temu akan auto cancel.",
+                          "Pasien dapat membatalkan janji temu maksimal h - 10 jam sebelum jadwal yang telah disepakati.",
                           style: GoogleFonts.poppins(
                             textStyle: TextStyle(
                               fontSize: 15,

@@ -73,6 +73,20 @@ class _PilihPembayaranState extends State<PilihPembayaran> {
       ),
       body: ListView(
         children: [
+          SizedBox(height: 20),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            child: Text(
+              'Total pembayaran: ${selectedPatient.nominal}',
+              style: GoogleFonts.poppins(
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             child: Text(
@@ -324,14 +338,17 @@ class Pembayaran extends StatelessWidget {
           //menggunakan icon arrow back
           icon: Icon(Icons.close),
           color: Colors.white,
-          onPressed: () { // Aksi saat tombol ditekan
-              // Mengganti halaman saat ini dengan BerandaPage dan menghapus semua halaman di atasnya dalam tumpukan navigasi
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => BerandaPage()), // Mengarahkan ke BerandaPage
-                (route) => false, // Menghapus semua halaman di atasnya
-              );
-            },
+          onPressed: () {
+            // Aksi saat tombol ditekan
+            // Mengganti halaman saat ini dengan BerandaPage dan menghapus semua halaman di atasnya dalam tumpukan navigasi
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      BerandaPage()), // Mengarahkan ke BerandaPage
+              (route) => false, // Menghapus semua halaman di atasnya
+            );
+          },
         ),
         toolbarHeight: 87,
       ),

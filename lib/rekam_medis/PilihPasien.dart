@@ -20,8 +20,6 @@ class Patient {
   final String spesialis; //spesialis
   final String berat_badan; //berat badan pasien
   final String tekanan_darah; //tekanan darah pasien
-  final String date; //tanggal upload rekam medis
-  final String time; //waktu upload rekam medis
   final String nominal; //nominal pembayaran
   final String diagnosisPdfPath; //hasil diagnosa
   final String resepPdfPath; //resep obat
@@ -36,8 +34,6 @@ class Patient {
       required this.spesialis,
       required this.berat_badan,
       required this.tekanan_darah,
-      required this.date,
-      required this.time,
       required this.nominal,
       required this.diagnosisPdfPath,
       required this.resepPdfPath});
@@ -56,8 +52,6 @@ class _PilihPasien extends State<PilihPasien> {
         spesialis: 'Dokter Umum',
         berat_badan: '53 kg',
         tekanan_darah: '112/72',
-        date: '15/02/2024',
-        time: '16.31',
         nominal: 'Rp 370.500',
         diagnosisPdfPath: 'assets/images/hasil_diagnosa_ratu.pdf',
         resepPdfPath: 'assets/images/resep_obat_ratu.pdf'),
@@ -70,8 +64,6 @@ class _PilihPasien extends State<PilihPasien> {
         spesialis: 'Dokter THT',
         berat_badan: '20 kg',
         tekanan_darah: '100/50',
-        date: '11/05/2024',
-        time: '10.00',
         nominal: 'Rp 5.000.000',
         diagnosisPdfPath: 'assets/images/hasil_diagnosa_marvel.pdf',
         resepPdfPath: 'assets/images/resep_obat_marvel.pdf'),
@@ -84,8 +76,6 @@ class _PilihPasien extends State<PilihPasien> {
         spesialis: 'Dokter OBGYN',
         berat_badan: '55 kg',
         tekanan_darah: '115/65',
-        date: '07/07/2024',
-        time: '15.00',
         nominal: 'Rp 1.000.000',
         diagnosisPdfPath: 'assets/images/hasil_diagnosa_rifanny.pdf',
         resepPdfPath: 'assets/images/resep_obat_rifanny.pdf'),
@@ -98,8 +88,6 @@ class _PilihPasien extends State<PilihPasien> {
         spesialis: 'Dokter Kulit',
         berat_badan: '60 kg',
         tekanan_darah: '130/80',
-        date: '09/10/2023',
-        time: '14.50',
         nominal: 'Rp 200.000',
         diagnosisPdfPath: 'assets/images/hasil_diagnosa_michael.pdf',
         resepPdfPath: 'assets/images/resep_obat_michael.pdf'),
@@ -112,8 +100,6 @@ class _PilihPasien extends State<PilihPasien> {
         spesialis: 'Dokter Mata',
         berat_badan: '40 kg',
         tekanan_darah: '120/90',
-        date: '12/03/2022',
-        time: '17.30',
         nominal: 'Rp 90.000',
         diagnosisPdfPath: 'assets/images/hasil_diagnosa_emily.pdf',
         resepPdfPath: 'assets/images/resep_obat_emily.pdf'),
